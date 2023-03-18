@@ -36,7 +36,6 @@ class Provider implements vscode.TreeDataProvider<number> {
     setData(data: readonly vscode.Tab[]) {
         this.indices = data.map((_, i) => i + 1);
         this.data = data.map(x => x);
-        // this.data = data.map((x, i) => ({ index: i, tab: x }));
         this._onDidChangeTreeData.fire();
     }
     getDataSize() {
@@ -54,12 +53,6 @@ export function init() {
         await vscode.commands.executeCommand("workbench.action.openEditorAtIndex", e.selection[0] - 1);
         if (keepViewAfterSelect) { keepViewAfterSelect = false; return; }
         await vscode.commands.executeCommand("workbench.action.closeSidebar");
-        // const focusedTab = e.selection[0].group.activeTab ?? e.selection[0];
-        // const focusedIndex = e.selection[0].group.tabs.indexOf(focusedTab);
-        // await vscode.commands.executeCommand("workbench.action.openEditorAtIndex", e.selection[0].group.tabs.indexOf(e.selection[0]));
-        // await vscode.commands.executeCommand("workbench.action.moveEditorLeftInGroup", e.selection[0].group.tabs.indexOf(e.selection[0]));
-        // await vscode.commands.executeCommand("workbench.action.openEditorAtIndex", focusedIndex);
-        // await vscode.commands.executeCommand("workbench.view.extension.fast_switch");
     });
 
     return view;
