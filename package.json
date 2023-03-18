@@ -190,14 +190,6 @@
         "category": "View"
       },
       {
-        "command": "my-tools.tabManagement.focusItem",
-        "title": "Tab Management Focus Item"
-      },
-      {
-        "command": "my-tools.tabManagement.selectItem",
-        "title": "Tab Management Select Item"
-      },
-      {
         "command": "my-tools.tabManagement.focusAtIndex",
         "title": "my-tools.tabManagement.focusAtIndex"
       },
