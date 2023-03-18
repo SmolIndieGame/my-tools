@@ -9,13 +9,205 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./out/extension.js",
   "contributes": {
+    "keybindings": [
+      {
+        "key": "alt+`",
+        "command": "workbench.view.extension.tabManagement"
+      },
+      {
+        "key": "alt+`",
+        "command": "workbench.action.closeSidebar",
+        "when": "sideBarFocus && activeViewlet == 'workbench.view.extension.tabManagement'"
+      },
+      {
+        "key": "d",
+        "command": "my-tools.tabManagement.closeEditor",
+        "when": "sideBarFocus && activeViewlet == 'workbench.view.extension.tabManagement'",
+        "args": 0
+      },
+      {
+        "key": "alt+k",
+        "command": "my-tools.tabManagement.moveTabUp",
+        "when": "sideBarFocus && activeViewlet == 'workbench.view.extension.tabManagement'"
+      },
+      {
+        "key": "alt+j",
+        "command": "my-tools.tabManagement.moveTabDown",
+        "when": "sideBarFocus && activeViewlet == 'workbench.view.extension.tabManagement'"
+      },
+      {
+        "key": "1",
+        "command": "my-tools.tabManagement.focusAtIndex",
+        "when": "sideBarFocus && activeViewlet == 'workbench.view.extension.tabManagement'",
+        "args": 1
+      },
+      {
+        "key": "2",
+        "command": "my-tools.tabManagement.focusAtIndex",
+        "when": "sideBarFocus && activeViewlet == 'workbench.view.extension.tabManagement'",
+        "args": 2
+      },
+      {
+        "key": "3",
+        "command": "my-tools.tabManagement.focusAtIndex",
+        "when": "sideBarFocus && activeViewlet == 'workbench.view.extension.tabManagement'",
+        "args": 3
+      },
+      {
+        "key": "4",
+        "command": "my-tools.tabManagement.focusAtIndex",
+        "when": "sideBarFocus && activeViewlet == 'workbench.view.extension.tabManagement'",
+        "args": 4
+      },
+      {
+        "key": "5",
+        "command": "my-tools.tabManagement.focusAtIndex",
+        "when": "sideBarFocus && activeViewlet == 'workbench.view.extension.tabManagement'",
+        "args": 5
+      },
+      {
+        "key": "6",
+        "command": "my-tools.tabManagement.focusAtIndex",
+        "when": "sideBarFocus && activeViewlet == 'workbench.view.extension.tabManagement'",
+        "args": 6
+      },
+      {
+        "key": "7",
+        "command": "my-tools.tabManagement.focusAtIndex",
+        "when": "sideBarFocus && activeViewlet == 'workbench.view.extension.tabManagement'",
+        "args": 7
+      },
+      {
+        "key": "8",
+        "command": "my-tools.tabManagement.focusAtIndex",
+        "when": "sideBarFocus && activeViewlet == 'workbench.view.extension.tabManagement'",
+        "args": 8
+      },
+      {
+        "key": "9",
+        "command": "my-tools.tabManagement.focusAtIndex",
+        "when": "sideBarFocus && activeViewlet == 'workbench.view.extension.tabManagement'",
+        "args": 9
+      },
+      {
+        "key": "0",
+        "command": "my-tools.tabManagement.focusAtIndex",
+        "when": "sideBarFocus && activeViewlet == 'workbench.view.extension.tabManagement'",
+        "args": 0
+      },
+      {
+        "key": "alt+1",
+        "command": "my-tools.tabManagement.openAtIndex",
+        "when": "activeViewlet == 'workbench.view.extension.tabManagement'",
+        "args": 1
+      },
+      {
+        "key": "alt+2",
+        "command": "my-tools.tabManagement.openAtIndex",
+        "when": "activeViewlet == 'workbench.view.extension.tabManagement'",
+        "args": 2
+      },
+      {
+        "key": "alt+3",
+        "command": "my-tools.tabManagement.openAtIndex",
+        "when": "activeViewlet == 'workbench.view.extension.tabManagement'",
+        "args": 3
+      },
+      {
+        "key": "alt+4",
+        "command": "my-tools.tabManagement.openAtIndex",
+        "when": "activeViewlet == 'workbench.view.extension.tabManagement'",
+        "args": 4
+      },
+      {
+        "key": "alt+5",
+        "command": "my-tools.tabManagement.openAtIndex",
+        "when": "activeViewlet == 'workbench.view.extension.tabManagement'",
+        "args": 5
+      },
+      {
+        "key": "alt+6",
+        "command": "my-tools.tabManagement.openAtIndex",
+        "when": "activeViewlet == 'workbench.view.extension.tabManagement'",
+        "args": 6
+      },
+      {
+        "key": "alt+7",
+        "command": "my-tools.tabManagement.openAtIndex",
+        "when": "activeViewlet == 'workbench.view.extension.tabManagement'",
+        "args": 7
+      },
+      {
+        "key": "alt+8",
+        "command": "my-tools.tabManagement.openAtIndex",
+        "when": "activeViewlet == 'workbench.view.extension.tabManagement'",
+        "args": 8
+      },
+      {
+        "key": "alt+9",
+        "command": "my-tools.tabManagement.openAtIndex",
+        "when": "activeViewlet == 'workbench.view.extension.tabManagement'",
+        "args": 9
+      },
+      {
+        "key": "alt+0",
+        "command": "my-tools.tabManagement.openAtIndex",
+        "when": "activeViewlet == 'workbench.view.extension.tabManagement'",
+        "args": 0
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "tabManagement",
+          "title": "Tab Management",
+          "icon": "media/dep.svg"
+        }
+      ]
+    },
+    "views": {
+      "tabManagement": [
+        {
+          "id": "tabManagement",
+          "name": "Tab Management"
+        }
+      ]
+    },
     "commands": [
       {
-        "command": "my-tools.helloWorld",
-        "title": "Hello World"
+        "command": "my-tools.tabManagement.moveTabUp",
+        "title": "Move Tab Left",
+        "category": "View"
+      },
+      {
+        "command": "my-tools.tabManagement.moveTabDown",
+        "title": "Move Tab Right",
+        "category": "View"
+      },
+      {
+        "command": "my-tools.tabManagement.focusItem",
+        "title": "Tab Management Focus Item"
+      },
+      {
+        "command": "my-tools.tabManagement.selectItem",
+        "title": "Tab Management Select Item"
+      },
+      {
+        "command": "my-tools.tabManagement.focusAtIndex",
+        "title": "my-tools.tabManagement.focusAtIndex"
+      },
+      {
+        "command": "my-tools.tabManagement.openAtIndex",
+        "title": "my-tools.tabManagement.openAtIndex"
+      },
+      {
+        "command": "my-tools.tabManagement.closeEditor",
+        "title": "my-tools.tabManagement.closeEditor"
       }
     ]
   },
