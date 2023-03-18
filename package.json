@@ -3,6 +3,9 @@
   "displayName": "my-tools",
   "description": "Just some scripts to make my vscode experience a little bit smoother.",
   "version": "1.0.0",
+  "repository": {
+    "url": "https://github.com/SmolIndieGame/my-tools"
+  },
   "engines": {
     "vscode": "^1.76.0"
   },
