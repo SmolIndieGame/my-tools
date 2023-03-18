@@ -8,6 +8,7 @@ A tab manager to quickly switch to, close and reorder tabs.
 * ``alt+` ``to toggle the manager.
 * `alt+j` to move the tab down.
 * `alt+k` to move the tab up.
+* `d` to close the tab.
 ---
 * Auto close sideBar after creating a new file.
 
