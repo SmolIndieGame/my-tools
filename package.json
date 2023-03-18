@@ -2,7 +2,7 @@
   "name": "my-tools",
   "displayName": "my-tools",
   "description": "Just some scripts to make my vscode experience a little bit smoother.",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "engines": {
     "vscode": "^1.76.0"
   },
