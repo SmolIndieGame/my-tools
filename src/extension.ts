@@ -14,12 +14,12 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Tab Manager.
 	context.subscriptions.push(TabManager.init());
-	context.subscriptions.push(vscode.commands.registerCommand("my-tools.tabManagement.moveTabUp", TabManager.moveTabUp));
-	context.subscriptions.push(vscode.commands.registerCommand("my-tools.tabManagement.moveTabDown", TabManager.moveTabDown));
-	context.subscriptions.push(vscode.commands.registerCommand("my-tools.tabManagement.focusAtIndex", TabManager.focus));
-	context.subscriptions.push(vscode.commands.registerCommand("my-tools.tabManagement.openAtIndex", TabManager.selectTab));
-	context.subscriptions.push(vscode.commands.registerCommand("my-tools.tabManagement.closeEditor", TabManager.removeTab));
-	context.subscriptions.push(vscode.commands.registerCommand("my-tools.tabManagement.listSelectAndClose", TabManager.selectListAndClose));
+	context.subscriptions.push(vscode.commands.registerCommand("my-tools.tabManagement.moveTabUp", TabManager.registerMoveTabUp));
+	context.subscriptions.push(vscode.commands.registerCommand("my-tools.tabManagement.moveTabDown", TabManager.registerMoveTabDown));
+	context.subscriptions.push(vscode.commands.registerCommand("my-tools.tabManagement.focusAtIndex", TabManager.registerFocusTab));
+	context.subscriptions.push(vscode.commands.registerCommand("my-tools.tabManagement.openAtIndex", TabManager.registerSelectTab));
+	context.subscriptions.push(vscode.commands.registerCommand("my-tools.tabManagement.closeEditor", TabManager.registerRemoveTab));
+	context.subscriptions.push(vscode.commands.registerCommand("my-tools.tabManagement.listSelectAndClose", TabManager.registerSelectList));
 	context.subscriptions.push(vscode.window.tabGroups.onDidChangeTabs(() => TabManager.update()));
 }
 

@@ -2,12 +2,20 @@ import * as vscode from 'vscode';
 import delay from '../utils/delay';
 import queue from '../utils/queue';
 
+enum Motion {
+    delete,
+    moveUp,
+    moveDown,
+    selectTab,
+    focusTab,
+    selectList
+}
+
 var view: vscode.TreeView<number>;
 var prov: Provider;
-const moveQueue: queue<{ up: boolean, index: number }> = new queue();
+const motionQueue: queue<{ motion: Motion, tab?: number }> = new queue();
 var suspendSelect: boolean = false;
-var moving: boolean = false;
-var deleting: boolean = false;
+var inMotion: boolean = false;
 
 class Provider implements vscode.TreeDataProvider<number> {
     private indices: number[] = [];
@@ -55,82 +63,125 @@ export function init() {
     return view;
 }
 
-async function moveTab() {
-    moving = true;
-    while (moveQueue.size > 0) {
-        const request = moveQueue.dequeue();
-        if (request === undefined) { continue; }
-        await vscode.commands.executeCommand("list.select");
+async function moveTab(up: boolean) {
+    await vscode.commands.executeCommand("list.select");
 
-        const newSelection = view.selection.length >= 1 ? view.selection[0] : -1;
-        if (newSelection < 0) { continue; }
-        if (request.up && newSelection === 1) { continue; }
-        if (!request.up && newSelection === prov.getDataSize()) { continue; }
-        suspendSelect = true;
-        await vscode.commands.executeCommand(`workbench.action.moveEditor${request.up ? "Left" : "Right"}InGroup`);
-        await delay(50);
+    const newSelection = view.selection.length >= 1 ? view.selection[0] : -1;
+    if (newSelection < 0) { return; }
+    if (up && newSelection === 1) { return; }
+    if (!up && newSelection === prov.getDataSize()) { return; }
+    suspendSelect = true;
+    await vscode.commands.executeCommand(`workbench.action.moveEditor${up ? "Left" : "Right"}InGroup`);
+    await delay(50);
 
-        const activeTabGroup = vscode.window.tabGroups.activeTabGroup;
-        if (activeTabGroup.activeTab === undefined) { suspendSelect = false; continue; }
-        await view.reveal(activeTabGroup.tabs.indexOf(activeTabGroup.activeTab) + 1, { focus: true });
-        suspendSelect = false;
-    }
-    moving = false;
+    const activeTabGroup = vscode.window.tabGroups.activeTabGroup;
+    if (activeTabGroup.activeTab === undefined) { suspendSelect = false; return; }
+    await view.reveal(activeTabGroup.tabs.indexOf(activeTabGroup.activeTab) + 1, { focus: true });
+    suspendSelect = false;
 }
 
-function registerTabMove(up: boolean) {
-    moveQueue.enqueue({ up, index: 0 });
-    if (!moving) { moveTab(); }
+async function removeTab() {
+    await vscode.commands.executeCommand("list.select");
+    suspendSelect = true;
+    await vscode.commands.executeCommand("workbench.action.closeActiveEditor");
+    const activeTabGroup = vscode.window.tabGroups.activeTabGroup;
+    if (activeTabGroup.activeTab === undefined) { suspendSelect = false; return; }
+    await view.reveal(activeTabGroup.tabs.indexOf(activeTabGroup.activeTab) + 1, { select: true, focus: true });
+    suspendSelect = false;
 }
 
-export function moveTabUp() { registerTabMove(true); }
-
-export function moveTabDown() { registerTabMove(false); }
-
-export async function removeTab() {
-    if (deleting) { return; }
-    deleting = true;
-    try {
-        await vscode.commands.executeCommand("list.select");
-        suspendSelect = true;
-        await vscode.commands.executeCommand("workbench.action.closeActiveEditor");
-        const activeTabGroup = vscode.window.tabGroups.activeTabGroup;
-        if (activeTabGroup.activeTab === undefined) { suspendSelect = false; return; }
-        await view.reveal(activeTabGroup.tabs.indexOf(activeTabGroup.activeTab) + 1, { select: true, focus: true });
-        suspendSelect = false;
-    } finally {
-        deleting = false;
-    }
-}
-
-export async function selectListAndClose() {
+async function selectListAndClose() {
     if (suspendSelect) { return; }
     await vscode.commands.executeCommand("list.select");
     if (view.selection.length === 0) { return; }
     await vscode.commands.executeCommand("workbench.action.closeSidebar");
 }
 
-export async function selectTab(num: number) {
+async function selectTab(num: number) {
     if (num === 0) {
         await vscode.commands.executeCommand("workbench.action.lastEditorInGroup");
     } else {
         await vscode.commands.executeCommand("workbench.action.openEditorAtIndex", num - 1);
     }
-
     await vscode.commands.executeCommand("workbench.action.closeSidebar");
+}
+
+async function focusTab(num: number) {
+    if (num === 0) {
+        await view.reveal(prov.getDataSize(), { select: false, focus: true });
+        return;
+    }
+    await view.reveal(num, { select: false, focus: true });
+}
+
+async function executeMotion() {
+    if (inMotion) { return; }
+    inMotion = true;
+    while (motionQueue.size > 0) {
+        if (!view || !view.visible) {
+            motionQueue.clear();
+            break;
+        }
+        const motion = motionQueue.dequeue();
+        if (motion === undefined) { continue; }
+        switch (motion.motion) {
+            case Motion.delete:
+                await removeTab();
+                break;
+            case Motion.moveDown:
+                await moveTab(false);
+                break;
+            case Motion.moveUp:
+                await moveTab(true);
+                break;
+            case Motion.selectList:
+                await selectListAndClose();
+                break;
+            case Motion.selectTab:
+                await selectTab(motion.tab ?? 0);
+                break;
+            case Motion.focusTab:
+                await focusTab(motion.tab ?? 0);
+                break;
+            default:
+                break;
+        }
+    }
+    inMotion = false;
+}
+
+export function registerMoveTabUp() {
+    motionQueue.enqueue({ motion: Motion.moveUp });
+    executeMotion();
+}
+
+export function registerMoveTabDown() {
+    motionQueue.enqueue({ motion: Motion.moveDown });
+    executeMotion();
+}
+
+export function registerRemoveTab() {
+    motionQueue.enqueue({ motion: Motion.delete });
+    executeMotion();
+}
+
+export function registerSelectList() {
+    motionQueue.enqueue({ motion: Motion.selectList });
+    executeMotion();
+}
+
+export function registerSelectTab(tab: number) {
+    motionQueue.enqueue({ motion: Motion.selectTab, tab: tab });
+    executeMotion();
+}
+
+export function registerFocusTab(tab: number) {
+    motionQueue.enqueue({ motion: Motion.focusTab, tab: tab });
+    executeMotion();
 }
 
 export function update(e?: boolean) {
     if (e === undefined && !view.visible) { return; }
     if (e !== undefined && e === false) { return; }
     prov.setData(vscode.window.tabGroups.activeTabGroup.tabs);
-}
-
-export function focus(num: number) {
-    if (!view || !view.visible) { return; }
-    if (num === 0) {
-        view.reveal(prov.getDataSize(), { select: false, focus: true });
-    } else {
-        view.reveal(num, { select: false, focus: true });
-    }
 }

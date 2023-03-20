@@ -45,4 +45,9 @@ export default class <E> {
     peek(): E | undefined {
         return this.head?.value;
     }
+    clear(): void {
+        this.head = null;
+        this.tail = null;
+        this._size = 0;
+    }
 }
