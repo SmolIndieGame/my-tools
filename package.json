@@ -50,16 +50,6 @@
         "when": "sideBarFocus && activeViewlet == 'workbench.view.extension.tabManagement' && !inputFocus"
       },
       {
-        "key": "l",
-        "command": "my-tools.tabManagement.listSelectAndClose",
-        "when": "sideBarFocus && activeViewlet == 'workbench.view.extension.tabManagement' && !inputFocus"
-      },
-      {
-        "key": "l",
-        "command": "-list.select",
-        "when": "listFocus && !inputFocus"
-      },
-      {
         "key": "space",
         "command": "my-tools.tabManagement.listSelectAndClose",
         "when": "sideBarFocus && activeViewlet == 'workbench.view.extension.tabManagement' && !inputFocus"
