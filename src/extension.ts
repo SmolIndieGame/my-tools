@@ -19,6 +19,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand("my-tools.tabManagement.focusAtIndex", TabManager.focus));
 	context.subscriptions.push(vscode.commands.registerCommand("my-tools.tabManagement.openAtIndex", TabManager.selectTab));
 	context.subscriptions.push(vscode.commands.registerCommand("my-tools.tabManagement.closeEditor", TabManager.removeTab));
+	context.subscriptions.push(vscode.commands.registerCommand("my-tools.tabManagement.listSelectAndClose", TabManager.selectListAndClose));
 	context.subscriptions.push(vscode.window.tabGroups.onDidChangeTabs(() => TabManager.update()));
 }
 

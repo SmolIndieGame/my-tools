@@ -6,7 +6,6 @@ var view: vscode.TreeView<number>;
 var prov: Provider;
 const moveQueue: queue<{ up: boolean, index: number }> = new queue();
 var suspendSelect: boolean = false;
-var keepViewAfterSelect: boolean = false;
 var moving: boolean = false;
 var deleting: boolean = false;
 
@@ -51,8 +50,6 @@ export function init() {
         if (e.selection.length === 0) { return; }
         if (suspendSelect) { return; }
         await vscode.commands.executeCommand("workbench.action.openEditorAtIndex", e.selection[0] - 1);
-        if (keepViewAfterSelect) { keepViewAfterSelect = false; return; }
-        await vscode.commands.executeCommand("workbench.action.closeSidebar");
     });
 
     return view;
@@ -63,7 +60,6 @@ async function moveTab() {
     while (moveQueue.size > 0) {
         const request = moveQueue.dequeue();
         if (request === undefined) { continue; }
-        keepViewAfterSelect = true;
         await vscode.commands.executeCommand("list.select");
 
         const newSelection = view.selection.length >= 1 ? view.selection[0] : -1;
@@ -94,11 +90,9 @@ export async function removeTab() {
     if (deleting) { return; }
     deleting = true;
     try {
-        keepViewAfterSelect = true;
         await vscode.commands.executeCommand("list.select");
         suspendSelect = true;
         await vscode.commands.executeCommand("workbench.action.closeActiveEditor");
-        // await delay(100);
         const activeTabGroup = vscode.window.tabGroups.activeTabGroup;
         if (activeTabGroup.activeTab === undefined) { suspendSelect = false; return; }
         await view.reveal(activeTabGroup.tabs.indexOf(activeTabGroup.activeTab) + 1, { select: true, focus: true });
@@ -106,6 +100,13 @@ export async function removeTab() {
     } finally {
         deleting = false;
     }
+}
+
+export async function selectListAndClose() {
+    if (suspendSelect) { return; }
+    await vscode.commands.executeCommand("list.select");
+    if (view.selection.length === 0) { return; }
+    await vscode.commands.executeCommand("workbench.action.closeSidebar");
 }
 
 export async function selectTab(num: number) {
