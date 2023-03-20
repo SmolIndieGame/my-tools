@@ -21,7 +21,7 @@
     "keybindings": [
       {
         "key": "alt+`",
-        "command": "workbench.view.extension.tabManagement"
+        "command": "my-tools.tabManagement.openView"
       },
       {
         "key": "alt+`",
@@ -193,6 +193,10 @@
       ]
     },
     "commands": [
+      {
+        "command": "my-tools.tabManagement.openView",
+        "title": "Open Tab Management..."
+      },
       {
         "command": "my-tools.tabManagement.moveTabUp",
         "title": "Move Tab Left",

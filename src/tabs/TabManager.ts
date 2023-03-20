@@ -185,3 +185,13 @@ export function update(e?: boolean) {
     if (e !== undefined && e === false) { return; }
     prov.setData(vscode.window.tabGroups.activeTabGroup.tabs);
 }
+
+export async function open() {
+    if (!view) { return; }
+    suspendSelect = true;
+    const activeTabGroup = vscode.window.tabGroups.activeTabGroup;
+    prov.setData(activeTabGroup.tabs);
+    const idx = !activeTabGroup.activeTab ? 0 : activeTabGroup.tabs.indexOf(activeTabGroup.activeTab);
+    await view.reveal(idx + 1, { select: true, focus: true });
+    suspendSelect = false;
+}

@@ -14,6 +14,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Tab Manager.
 	context.subscriptions.push(TabManager.init());
+	context.subscriptions.push(vscode.commands.registerCommand("my-tools.tabManagement.openView", TabManager.open));
 	context.subscriptions.push(vscode.commands.registerCommand("my-tools.tabManagement.moveTabUp", TabManager.registerMoveTabUp));
 	context.subscriptions.push(vscode.commands.registerCommand("my-tools.tabManagement.moveTabDown", TabManager.registerMoveTabDown));
 	context.subscriptions.push(vscode.commands.registerCommand("my-tools.tabManagement.focusAtIndex", TabManager.registerFocusTab));
