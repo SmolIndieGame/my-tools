@@ -68,6 +68,7 @@ async function moveTab() {
         if (!request.up && newSelection === prov.getDataSize()) { continue; }
         suspendSelect = true;
         await vscode.commands.executeCommand(`workbench.action.moveEditor${request.up ? "Left" : "Right"}InGroup`);
+        await delay(50);
 
         const activeTabGroup = vscode.window.tabGroups.activeTabGroup;
         if (activeTabGroup.activeTab === undefined) { suspendSelect = false; continue; }
