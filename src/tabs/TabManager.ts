@@ -111,6 +111,7 @@ async function focusTab(num: number) {
         await view.reveal(prov.getDataSize(), { select: false, focus: true });
         return;
     }
+    if (num > prov.getDataSize()) { return; }
     await view.reveal(num, { select: false, focus: true });
 }
 
