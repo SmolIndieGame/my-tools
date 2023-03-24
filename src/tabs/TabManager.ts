@@ -27,6 +27,7 @@ class Provider implements vscode.TreeDataProvider<number> {
         = this._onDidChangeTreeData.event;
 
     getTreeItem(element: number): vscode.TreeItem | Thenable<vscode.TreeItem> {
+        if (this.data.length === 0) { return new vscode.TreeItem(""); }
         const index = element <= this.data.length ? element - 1 : 0;
         const item = new vscode.TreeItem(this.data[index].label);
         if (index < 9) { item.description = `alt + ${index + 1}`; }
@@ -48,19 +49,6 @@ class Provider implements vscode.TreeDataProvider<number> {
     getDataSize() {
         return this.data.length;
     }
-}
-
-export function init() {
-    prov = new Provider();
-    view = vscode.window.createTreeView('tabManagement', { treeDataProvider: prov });
-    view.onDidChangeVisibility(e => update(e.visible));
-    view.onDidChangeSelection(async e => {
-        if (e.selection.length === 0) { return; }
-        if (suspendSelect) { return; }
-        await vscode.commands.executeCommand("workbench.action.openEditorAtIndex", e.selection[0] - 1);
-    });
-
-    return view;
 }
 
 async function moveTab(up: boolean) {
@@ -151,6 +139,18 @@ async function executeMotion() {
     inMotion = false;
 }
 
+export function init() {
+    prov = new Provider();
+    view = vscode.window.createTreeView('tabManagement', { treeDataProvider: prov });
+    view.onDidChangeSelection(async e => {
+        if (e.selection.length === 0) { return; }
+        if (suspendSelect) { return; }
+        await vscode.commands.executeCommand("workbench.action.openEditorAtIndex", e.selection[0] - 1);
+    });
+
+    return view;
+}
+
 export function registerMoveTabUp() {
     motionQueue.enqueue({ motion: Motion.moveUp });
     executeMotion();
@@ -190,6 +190,7 @@ export function update(e?: boolean) {
 export async function open() {
     if (!view) { return; }
     suspendSelect = true;
+    await view.reveal(0, { select: false });
     const activeTabGroup = vscode.window.tabGroups.activeTabGroup;
     prov.setData(activeTabGroup.tabs);
     const idx = !activeTabGroup.activeTab ? 0 : activeTabGroup.tabs.indexOf(activeTabGroup.activeTab);
