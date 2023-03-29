@@ -1,17 +1,25 @@
-import { lstatSync } from 'fs';
+import { fstatSync, lstatSync } from 'fs';
 import path = require('path');
 import * as vscode from 'vscode';
+import * as StatusBar from './status bar/AutoShowStatusBarInZenMode';
 import * as TabManager from './tabs/TabManager';
 
 export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
         // Close side bar after creating files.
         vscode.workspace.onDidCreateFiles(evt => {
+            if (!vscode.workspace.getConfiguration("my-tools").get("autoCloseExplorer")) {
+                return;
+            }
             for (const file of evt.files) {
-                if (lstatSync(file.fsPath).isDirectory()) { return; }
+                const state = lstatSync(file.fsPath);
+                if (state.isDirectory()) { return; }
+                if (/.*\ copy(\ \d+)?(\.[^.]+)?$/.test(file.path)) { return; }
             }
             vscode.commands.executeCommand("workbench.action.closeSidebar");
         }),
+        // Auto show status bar in zen mode.
+        vscode.workspace.onDidChangeConfiguration(StatusBar.update),
         // Tab Manager.
         TabManager.init(),
         vscode.commands.registerCommand("my-tools.tabManagement.openView", TabManager.open),
