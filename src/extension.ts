@@ -1,4 +1,4 @@
-import { fstatSync, lstatSync } from 'fs';
+import { lstatSync } from 'fs';
 import path = require('path');
 import * as vscode from 'vscode';
 import * as StatusBar from './status bar/AutoShowStatusBarInZenMode';
